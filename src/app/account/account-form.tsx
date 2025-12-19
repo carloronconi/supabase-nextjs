@@ -1,56 +1,57 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { type User } from "@supabase/supabase-js";
 import Avatar from "./avatar";
 
-export default function AccountForm({ user }: { user: User | null }) {
-  const supabase = createClient();
-  const [loading, setLoading] = useState(true);
-  const [fullname, setFullname] = useState<string | null>(null);
-  const [username, setUsername] = useState<string | null>(null);
-  const [website, setWebsite] = useState<string | null>(null);
-  const [avatar_url, setAvatarUrl] = useState<string | null>(null);
-
-  const getProfile = useCallback(async () => {
-    try {
-      setLoading(true);
-
-      const { data, error, status } = await supabase
-        .from("profiles")
-        .select(`full_name, username, website, avatar_url`)
-        .eq("id", user?.id)
-        .single();
-
-      if (error && status !== 406) {
-        console.log(error);
-        throw error;
-      }
-
-      if (data) {
-        setFullname(data.full_name);
-        setUsername(data.username);
-        setWebsite(data.website);
-        setAvatarUrl(data.avatar_url);
-      }
-    } catch (_error) {
-      alert("Error loading user data!");
-    } finally {
-      setLoading(false);
+type Profile =
+  | {
+      full_name: string | null;
+      username: string | null;
+      website: string | null;
+      avatar_url: string | null;
     }
-  }, [user, supabase]);
+  | null
+  | undefined;
+
+export default function AccountForm({
+  user,
+  initialProfile,
+}: {
+  user: User | null;
+  initialProfile?: Profile;
+}) {
+  const supabase = createClient();
+  const [loading, setLoading] = useState(false);
+  const [fullname, setFullname] = useState<string | null>(
+    initialProfile?.full_name ?? null
+  );
+  const [username, setUsername] = useState<string | null>(
+    initialProfile?.username ?? null
+  );
+  const [website, setWebsite] = useState<string | null>(
+    initialProfile?.website ?? null
+  );
+  const [avatar_url, setAvatarUrl] = useState<string | null>(
+    initialProfile?.avatar_url ?? null
+  );
 
   useEffect(() => {
-    getProfile();
-  }, [user, getProfile]);
+    if (!initialProfile) return;
+    setFullname(initialProfile.full_name);
+    setUsername(initialProfile.username);
+    setWebsite(initialProfile.website);
+    setAvatarUrl(initialProfile.avatar_url);
+  }, [initialProfile]);
 
   async function updateProfile({
+    fullname: nextFullname,
     username,
     website,
     avatar_url,
   }: {
-    username: string | null;
     fullname: string | null;
+    username: string | null;
     website: string | null;
     avatar_url: string | null;
   }) {
@@ -59,7 +60,7 @@ export default function AccountForm({ user }: { user: User | null }) {
 
       const { error } = await supabase.from("profiles").upsert({
         id: user?.id as string,
-        full_name: fullname,
+        full_name: nextFullname,
         username,
         website,
         avatar_url,

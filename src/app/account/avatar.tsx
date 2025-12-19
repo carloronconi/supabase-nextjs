@@ -15,7 +15,7 @@ export default function Avatar({
   onUpload: (url: string) => void;
 }) {
   const supabase = createClient();
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(url);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -28,14 +28,19 @@ export default function Avatar({
           throw error;
         }
 
-        const url = URL.createObjectURL(data);
-        setAvatarUrl(url);
+        const objectUrl = URL.createObjectURL(data);
+        setAvatarUrl(objectUrl);
       } catch (error) {
         console.log("Error downloading image: ", error);
       }
     }
 
-    if (url) downloadImage(url);
+    if (!url) {
+      setAvatarUrl(null);
+      return;
+    }
+
+    downloadImage(url);
   }, [url, supabase]);
 
   const uploadAvatar: React.ChangeEventHandler<HTMLInputElement> = async (

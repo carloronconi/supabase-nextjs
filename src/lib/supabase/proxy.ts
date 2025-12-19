@@ -29,8 +29,10 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // refreshing the auth token
-  await supabase.auth.getUser();
+  // Refresh the auth token and capture the session for route guards.
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  return supabaseResponse;
+  return { response: supabaseResponse, session };
 }
