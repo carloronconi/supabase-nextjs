@@ -38,32 +38,29 @@ export default async function UserPage({
   }
 
   return (
-    <div className="mx-auto mt-8 max-w-xl rounded-lg border border-gray-200 bg-white p-6 shadow">
-      <div className="flex flex-col items-center text-center">
+    <section className="page-section">
+      <div className="surface-card profile-card">
         <AvatarPreview
           src={avatarSrc}
           size={140}
           alt={profile.full_name || profile.username || "User avatar"}
         />
-        <p className="mt-6 text-sm uppercase tracking-wide text-gray-500">
-          Profile
-        </p>
-        <h1 className="mt-2 text-2xl font-semibold text-gray-900">
-          {profile.full_name || profile.username}
-        </h1>
-        <p className="text-gray-600">@{profile.username}</p>
-
-        {profile.website ? (
-          <a
-            href={profile.website}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-4 inline-block text-blue-600 hover:underline"
-          >
-            {profile.website}
-          </a>
-        ) : null}
+        <div className="profile-details">
+          <p className="eyebrow">Profile</p>
+          <h2>{profile.full_name || profile.username}</h2>
+          <p>@{profile.username}</p>
+          {profile.website ? (
+            <a
+              href={profile.website}
+              target="_blank"
+              rel="noreferrer"
+              className="website-chip"
+            >
+              {profile.website}
+            </a>
+          ) : null}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

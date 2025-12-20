@@ -76,67 +76,97 @@ export default function AccountForm({
   }
 
   return (
-    <div className="form-widget">
-      <Avatar
-        uid={user?.id ?? null}
-        url={avatar_url}
-        size={150}
-        onUpload={(url) => {
-          setAvatarUrl(url);
-          updateProfile({ fullname, username, website, avatar_url: url });
-        }}
-      />
-      <div>
-        <label htmlFor="email">Email</label>
-        <input id="email" type="text" value={user?.email} disabled />
-      </div>
-      <div>
-        <label htmlFor="fullName">Full Name</label>
-        <input
-          id="fullName"
-          type="text"
-          value={fullname || ""}
-          onChange={(e) => setFullname(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="username">Username</label>
-        <input
-          id="username"
-          type="text"
-          value={username || ""}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="website">Website</label>
-        <input
-          id="website"
-          type="url"
-          value={website || ""}
-          onChange={(e) => setWebsite(e.target.value)}
-        />
-      </div>
+    <section className="page-section">
+      <div className="surface-card">
+        <div className="section-heading">
+          <p className="eyebrow">Account</p>
+          <h1>Profile settings</h1>
+          <p>
+            Keep your public information up to date so teammates can recognize
+            you quickly across the workspace.
+          </p>
+        </div>
+        <div className="account-layout">
+          <div className="avatar-panel">
+            <Avatar
+              uid={user?.id ?? null}
+              url={avatar_url}
+              size={150}
+              onUpload={(url) => {
+                setAvatarUrl(url);
+                updateProfile({ fullname, username, website, avatar_url: url });
+              }}
+            />
+            <p className="helper-text">
+              Recommended size 400×400px. PNG or JPG works best.
+            </p>
+          </div>
 
-      <div>
-        <button
-          className="button primary block"
-          onClick={() =>
-            updateProfile({ fullname, username, website, avatar_url })
-          }
-          disabled={loading}
-        >
-          {loading ? "Loading ..." : "Update"}
-        </button>
-      </div>
+          <div className="form-grid">
+            <div className="fieldset">
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                className="input-control"
+                type="text"
+                value={user?.email ?? ""}
+                disabled
+              />
+            </div>
+            <div className="fieldset">
+              <label htmlFor="fullName">Full Name</label>
+              <input
+                id="fullName"
+                className="input-control"
+                type="text"
+                value={fullname || ""}
+                onChange={(e) => setFullname(e.target.value)}
+              />
+            </div>
+            <div className="fieldset">
+              <label htmlFor="username">Username</label>
+              <input
+                id="username"
+                className="input-control"
+                type="text"
+                value={username || ""}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div className="fieldset">
+              <label htmlFor="website">Website</label>
+              <input
+                id="website"
+                className="input-control"
+                type="url"
+                value={website || ""}
+                onChange={(e) => setWebsite(e.target.value)}
+              />
+            </div>
 
-      <div>
-        <form action="/auth/signout" method="post">
-          <button className="button block" type="submit">
-            Sign out
-          </button>
-        </form>
+            <div className="form-actions">
+              <button
+                className="btn btn-primary btn-full-mobile"
+                onClick={() =>
+                  updateProfile({ fullname, username, website, avatar_url })
+                }
+                disabled={loading}
+                type="button"
+              >
+                {loading ? "Saving…" : "Save changes"}
+              </button>
+              <form action="/auth/signout" method="post">
+                <button
+                  className="btn btn-ghost btn-full-mobile"
+                  type="submit"
+                >
+                  Sign out
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
